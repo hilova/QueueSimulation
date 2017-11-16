@@ -1,19 +1,39 @@
-package main.java.sample.Model;
+package sample.Model;
+import java.time.LocalTime;
 
-public class Servidor implements Runnable {
-    /**
-     * When an object implementing interface <code>Runnable</code> is used
-     * to create a thread, starting the thread causes the object's
-     * <code>run</code> method to be called in that separately executing
-     * thread.
-     * <p>
-     * The general contract of the method <code>run</code> is that it may
-     * take any action whatsoever.
-     *
-     * @see Thread#run()
-     */
-    @Override
-    public void run() {
+public class Servidor implements Comparable{
+    private Distribucion distribucionTiempoServicio;  // distribucion que describe el tiempo de servicio
+    private LocalTime tiempoSalida; // tiempo de salida del trabajo actual
+    private boolean ocupado;
 
+    public Servidor(Distribucion distribucionTiempoServicio) {
+        this.distribucionTiempoServicio = distribucionTiempoServicio;
+        ocupado = false;
+        tiempoSalida = LocalTime.MAX;
+    }
+
+    public void asignarTrabajo(LocalTime tiempoActual) {
+        ocupado = true; // ahora esta ocupado
+        tiempoSalida = tiempoActual.plus(distribucionTiempoServicio.calcular()); // calcular su tiempo de salida
+    }
+
+    public void terminarTrabajo() {
+        ocupado = false; // está ocioso
+        tiempoSalida = LocalTime.MAX;  // conviene asignarlo al tiempo máximo para hacer comparaciones con otros servidores
+    }
+
+    public LocalTime getTiempoSalida() {
+        return tiempoSalida;
+    }
+
+    public boolean isOcupado() {
+        return ocupado;
+    }
+
+    // determina cual servidor tiene un tiempo de salida más temprano
+    // se utilizará en la simulación para mantener los servidores en orden de más termprano a más tardío
+    public int compareTo(Object o) {
+        Servidor otroServidor = (Servidor) o;
+        return tiempoSalida.compareTo(otroServidor.getTiempoSalida());
     }
 }
