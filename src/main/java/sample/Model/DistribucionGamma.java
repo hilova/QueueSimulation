@@ -15,7 +15,7 @@ public class DistribucionGamma implements Distribucion {
     public Duration calcular() {
         // TODO calcular distribucion
         Random generador = new Random();                                        //Inicializamos el generador de números aleatorios
-        long quantil = (long)Math.pow((Gamma.gamma(alfa)*generador.nextDouble())/(Math.pow(mu,alfa)*Math.exp(-mu)),1-alfa);  //Generamos el quantil a partir de la probabilidad generada
+        long quantil = (long)Math.pow((Gamma.gamma(alfa)*generador.nextDouble())/(Math.pow(mu,alfa)*Math.exp(-mu)),1/(alfa-1));  //Generamos el quantil a partir de la probabilidad generada
         return Duration.ofMinutes(quantil);
     }
 
