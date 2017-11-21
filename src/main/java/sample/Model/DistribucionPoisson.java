@@ -25,4 +25,7 @@ public class DistribucionPoisson implements Distribucion{
         return Duration.ofMinutes(quantil);
     }
 
+    public String getName(){
+        return "Poisson";
+    }
 }

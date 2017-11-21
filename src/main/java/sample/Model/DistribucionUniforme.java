@@ -17,4 +17,8 @@ public class DistribucionUniforme implements Distribucion {
         long quantil = (long)(a + generador.nextDouble() * (b-a));  //Generamos el quantil a partir de la probabilidad generada
         return Duration.ofMinutes(quantil);
     }
+
+    public String getName(){
+        return "Uniforme";
+    }
 }

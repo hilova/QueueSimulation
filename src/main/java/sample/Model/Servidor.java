@@ -5,11 +5,13 @@ public class Servidor implements Comparable{
     private Distribucion distribucionTiempoServicio;  // distribucion que describe el tiempo de servicio
     private LocalTime tiempoSalida; // tiempo de salida del trabajo actual
     private boolean ocupado;
+    private String nombre;
 
-    public Servidor(Distribucion distribucionTiempoServicio) {
+    public Servidor(Distribucion distribucionTiempoServicio, String nombre) {
         this.distribucionTiempoServicio = distribucionTiempoServicio;
         ocupado = false;
         tiempoSalida = LocalTime.MAX;
+        this.nombre = nombre;
     }
 
     public void asignarTrabajo(LocalTime tiempoActual) {
@@ -35,5 +37,13 @@ public class Servidor implements Comparable{
     public int compareTo(Object o) {
         Servidor otroServidor = (Servidor) o;
         return tiempoSalida.compareTo(otroServidor.getTiempoSalida());
+    }
+
+    public String getNombre() {
+        return nombre;
+    }
+
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
     }
 }

@@ -22,4 +22,8 @@ public class DistribucionGamma implements Distribucion {
         return Duration.ofMinutes(quantil);
     }
 
+    public String getName(){
+        return "Gamma";
+    }
+
 }

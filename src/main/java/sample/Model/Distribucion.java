@@ -4,4 +4,5 @@ import java.time.Duration;
 
 public interface Distribucion {
     Duration calcular();
+    String getName();
 }
