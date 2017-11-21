@@ -12,7 +12,6 @@ public class DistribucionPoisson implements Distribucion{
     }
 
     public Duration calcular() {
-        // TODO calcular distribucion
         Random generador = new Random();                                        //Inicializamos el generador de números aleatorios
         int U = generador.nextInt();
         int i = 0;
