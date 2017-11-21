@@ -1,4 +1,4 @@
-package main.java.sample.Utils;
+package main.java.sample.Model;
 /******************************************************************************
  *  Compilation:  javac Gamma.java
  *  Execution:    java Gamma 5.6
