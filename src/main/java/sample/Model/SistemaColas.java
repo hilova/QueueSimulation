@@ -49,14 +49,17 @@ public class SistemaColas {
         // mientras no se haya terminado el tiempo
         while(tiempoActual.isBefore(tiempoMax)) {
 
-            // TODO debería ser un loop que se fija en cada trabajo, hasta sacar todos o encontrar que uno no se debe sacar, ya que podría haber más de un trabajo de mas de 6 mins
-            // checkear si el trabajo más antiguo tiene más de 6 minutos, por lo que debe ser eliminado
-            if(!colaTrabajos.isEmpty()) {
+            // buscar trabajos más antiguos que 6 minutos
+            while(!colaTrabajos.isEmpty()) {
                 // cola no vacía, calcular tiempo del trabajo más antiguo
                 tiempoEnCola = Duration.between(colaTrabajos.peek(), tiempoActual);
                 if(tiempoEnCola.toMinutes() >= 6) {
                     // excedió 6 minutos, eliminar de la cola
+                    System.out.println(tiempoActual.toString() + ": se eliminó un trabajo de la cola! Trabajos en espera: "+colaTrabajos.size());
                     colaTrabajos.poll();
+                } else {
+                    // no habrá más trabajos por eliminar
+                    break;
                 }
             }
 
