@@ -17,4 +17,7 @@ public class DistribucionExponencial implements Distribucion {
         return Duration.ofMinutes(quantil);
     }
 
+    public String getName(){
+        return "Exponencial";
+    }
 }

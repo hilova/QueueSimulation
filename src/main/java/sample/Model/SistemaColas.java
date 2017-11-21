@@ -38,7 +38,7 @@ public class SistemaColas {
 
         // inicializar los servidores y almacenarlos en la lista de ociosos
         for(int i = 0; i < distsServidores.length; i++) {
-            servidoresOciosos.add(new Servidor(distsServidores[i]));
+            servidoresOciosos.add(new Servidor(distsServidores[i], distsServidores[i].getName()));
         }
 
         // inicializar el generador de llegadas con la distribución recibida
@@ -67,24 +67,25 @@ public class SistemaColas {
             // servidoresOcuados.peek() devuelve este servidor
             if(servidoresOcupados.isEmpty() || generadorLlegadas.getTiempoSiguienteLlegada().isBefore(servidoresOcupados.peek().getTiempoSalida())) {
                 // procesar una llegada
-                System.out.println(tiempoActual.toString() + ": entró un trabajo!");
+                System.out.println(tiempoActual.toString() + ": Entró un trabajo!");
 
                 tiempoActual = generadorLlegadas.getTiempoSiguienteLlegada(); // actualizar tiempo actual
                 if(servidoresOciosos.isEmpty()) {
                     // no hay servidores disponibles, añadir el trabajo a la cola
-                    System.out.println("ningún servidor disponible, se añadió a la cola\n");
+                    System.out.println("Ningún servidor disponible, se añadió a la cola\n");
 
                     colaTrabajos.add(LocalTime.from(tiempoActual));
 
                 } else {
                     // escoger un servidor ocioso al azar
-                    System.out.println("trabajo asignado a un servidor\n");
 
                     servidorEscogido = generadorEnteros.nextInt(servidoresOciosos.size());
                     serv = servidoresOciosos.get(servidorEscogido);
 
                     // asignar el trabajo al servidor escogido
                     serv.asignarTrabajo(tiempoActual);
+
+                    System.out.println("Trabajo asignado a un Servidor con dist. "+ serv.getNombre() +"\n");
 
                     // transferirlo a la lista de servidores ocupados
                     servidoresOcupados.add(serv);
@@ -94,21 +95,23 @@ public class SistemaColas {
 
             } else {
                 // procesar una salida en el servidor
-                System.out.println(tiempoActual.toString() + ": un servidor terminó un trabajo!");
+                System.out.println(tiempoActual.toString() + ": Un servidor terminó un trabajo!");
 
                 tiempoActual = servidoresOcupados.peek().getTiempoSalida(); // actualizar tiempo actual
 
                 if(colaTrabajos.isEmpty()){
                     // cola vacía, terminar el trabajo del servidor
-                    System.out.println("la cola estaba vacía, el servidor queda ocioso\n");
+
 
                     servidoresOcupados.peek().terminarTrabajo();
+
+                    System.out.println("La cola estaba vacía, el Servidor "+ servidoresOcupados.peek().getNombre() + " quedó ocioso\n");
                     // transferirlo a la lista de servidores ociosos
                     servidoresOciosos.add(servidoresOcupados.poll());
 
                 } else {
                     // hay trabajos en la cola, eliminar uno y asignarlo al servidor
-                    System.out.println("el servidor fue asignado el siguiente trabajo en la cola\n");
+                    System.out.println("El servidor fue asignado el siguiente trabajo en la cola\n");
                     colaTrabajos.poll();
 
                     // eliminar y reinsertar el servidor para actualizar el heap

@@ -27,7 +27,6 @@ public class Main extends Application {
 
         //launch(args);
 
-        System.out.println("hello");
         SistemaColas sim = new SistemaColas();
 
         Distribucion[] distsServidores = new Distribucion[4];
@@ -39,7 +38,5 @@ public class Main extends Application {
         Distribucion distLlegadas = new DistribucionPoisson(2);
 
         sim.iniciarSimulacion(10, distsServidores, distLlegadas);
-
-        System.out.println("world");
     }
 }
