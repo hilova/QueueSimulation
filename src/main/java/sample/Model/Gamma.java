@@ -1,4 +1,4 @@
-package main.java.sample.Utils;
+package main.java.sample.Model;
 /******************************************************************************
  *  Compilation:  javac Gamma.java
  *  Execution:    java Gamma 5.6
@@ -24,7 +24,7 @@ public class Gamma {
         return tmp + Math.log(ser * Math.sqrt(2 * Math.PI));
     }
 
-    static double gamma(double x) {
+    public static double gamma(double x) {
         return Math.exp(logGamma(x));
     }
 }
