@@ -30,6 +30,8 @@ public class SistemaColas {
 
         Duration tiempoEnCola; // para calcular el tiempo que un trabajo lleva en la cola
 
+        Servidor serv = null;
+
         // para elegir un servidor al cual asignar llegadas
         Random generadorEnteros = new Random();
         int servidorEscogido = 0;
@@ -103,9 +105,13 @@ public class SistemaColas {
                 } else {
                     // hay trabajos en la cola, eliminar uno y asignarlo al servidor
                     System.out.println("el servidor fue asignado el siguiente trabajo en la cola\n");
-
                     colaTrabajos.poll();
-                    servidoresOcupados.peek().asignarTrabajo(tiempoActual);
+
+                    // eliminar y reinsertar el servidor para actualizar el heap
+                    serv = servidoresOcupados.poll();
+                    serv.asignarTrabajo(tiempoActual);
+                    servidoresOcupados.add(serv);
+
                 }
 
             }
