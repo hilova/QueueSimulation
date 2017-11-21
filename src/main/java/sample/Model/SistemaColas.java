@@ -30,13 +30,15 @@ public class SistemaColas {
 
         Duration tiempoEnCola;                              // para calcular el tiempo que un trabajo lleva en la cola
 
+        Servidor serv = null;
+
         // para elegir un servidor al cual asignar llegadas
         Random generadorEnteros = new Random();
         int servidorEscogido = 0;
 
         // inicializar los servidores y almacenarlos en la lista de ociosos
         for(int i = 0; i < distsServidores.length; i++) {
-           servidoresOciosos.add(new Servidor(distsServidores[i]));
+            servidoresOciosos.add(new Servidor(distsServidores[i]));
         }
 
         // inicializar el generador de llegadas con la distribución recibida
@@ -76,12 +78,13 @@ public class SistemaColas {
                     System.out.println("trabajo asignado a un servidor\n");
 
                     servidorEscogido = generadorEnteros.nextInt(servidoresOciosos.size());
+                    serv = servidoresOciosos.get(servidorEscogido);
 
                     // asignar el trabajo al servidor escogido
-                    servidoresOciosos.get(servidorEscogido).asignarTrabajo(tiempoActual);
+                    serv.asignarTrabajo(tiempoActual);
 
                     // transferirlo a la lista de servidores ocupados
-                    servidoresOcupados.add(servidoresOciosos.get(servidorEscogido));
+                    servidoresOcupados.add(serv);
                     servidoresOciosos.remove(servidorEscogido);
                 }
                 generadorLlegadas.generarSiguienteLlegada(tiempoActual); // calcular el tiempo de la siguiente llegada
@@ -103,9 +106,13 @@ public class SistemaColas {
                 } else {
                     // hay trabajos en la cola, eliminar uno y asignarlo al servidor
                     System.out.println("el servidor fue asignado el siguiente trabajo en la cola\n");
-
                     colaTrabajos.poll();
-                    servidoresOcupados.peek().asignarTrabajo(tiempoActual);
+
+                    // eliminar y reinsertar el servidor para actualizar el heap
+                    serv = servidoresOcupados.poll();
+                    serv.asignarTrabajo(tiempoActual);
+                    servidoresOcupados.add(serv);
+
                 }
 
             }
