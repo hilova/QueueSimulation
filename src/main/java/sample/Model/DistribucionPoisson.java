@@ -11,7 +11,6 @@ public class DistribucionPoisson implements Distribucion{
     }
 
     public Duration calcular() {
-        // TODO calcular distribucion
         Random generador = new Random();                                        //Inicializamos el generador de números aleatorios
 
         long quantil = (long)(-1 * Math.log(1-generador.nextDouble())/lambda);  //Generamos el quantil a partir de la probabilidad generada
