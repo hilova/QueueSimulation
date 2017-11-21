@@ -25,10 +25,10 @@ public class SistemaColas {
 
     public void iniciarSimulacion(int duracionHoras, Distribucion[] distsServidores, Distribucion distLlegadas) {
 
-        tiempoActual = LocalTime.of(5,0); // reloj se empieza a las 6 am
-        tiempoMax = tiempoActual.plusHours(duracionHoras); // tiempo en que termina de acuerdo al parámetro recibido
+        tiempoActual = LocalTime.of(5,0);                   // reloj se empieza a las 6 am
+        tiempoMax = tiempoActual.plusHours(duracionHoras);  // tiempo en que termina de acuerdo al parámetro recibido
 
-        Duration tiempoEnCola; // para calcular el tiempo que un trabajo lleva en la cola
+        Duration tiempoEnCola;                              // para calcular el tiempo que un trabajo lleva en la cola
 
         Servidor serv = null;
 
