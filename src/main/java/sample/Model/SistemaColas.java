@@ -38,7 +38,7 @@ public class SistemaColas {
 
         // inicializar los servidores y almacenarlos en la lista de ociosos
         for(int i = 0; i < distsServidores.length; i++) {
-           servidoresOciosos.add(new Servidor(distsServidores[i]));
+            servidoresOciosos.add(new Servidor(distsServidores[i]));
         }
 
         // inicializar el generador de llegadas con la distribución recibida
@@ -78,12 +78,13 @@ public class SistemaColas {
                     System.out.println("trabajo asignado a un servidor\n");
 
                     servidorEscogido = generadorEnteros.nextInt(servidoresOciosos.size());
+                    serv = servidoresOciosos.get(servidorEscogido);
 
                     // asignar el trabajo al servidor escogido
-                    servidoresOciosos.get(servidorEscogido).asignarTrabajo(tiempoActual);
+                    serv.asignarTrabajo(tiempoActual);
 
                     // transferirlo a la lista de servidores ocupados
-                    servidoresOcupados.add(servidoresOciosos.get(servidorEscogido));
+                    servidoresOcupados.add(serv);
                     servidoresOciosos.remove(servidorEscogido);
                 }
                 generadorLlegadas.generarSiguienteLlegada(tiempoActual); // calcular el tiempo de la siguiente llegada
