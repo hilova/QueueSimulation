@@ -1,8 +1,5 @@
-package sample.Model;
+package Model;
 
-import main.java.sample.Model.Gamma;
-
-import java.time.Duration;
 import java.util.Random;
 
 public class DistribucionGamma implements Distribucion {
@@ -14,16 +11,15 @@ public class DistribucionGamma implements Distribucion {
         this.mu = mu;
     }
 
-    public Duration calcular() {
-        // TODO calcular distribucion
+    public double calcular() {
         Random generador = new Random();
         double randomNumber = generador.nextDouble();//Inicializamos el generador de números aleatorios
-        long quantil = (long)Math.pow((Gamma.gamma(alfa)*randomNumber)/(Math.pow(mu,alfa)*Math.exp(-mu)),1/(alfa-1));  //Generamos el quantil a partir de la probabilidad generada
-        return Duration.ofMinutes(quantil);
+        double quantil = Math.pow((Gamma.gamma(alfa)*randomNumber)/(Math.pow(mu,alfa)*Math.exp(-mu)),1/(alfa-1));  //Generamos el quantil a partir de la probabilidad generada
+        return quantil;
     }
 
     public String getName(){
-        return "Gamma";
+        return "gamma";
     }
 
 }

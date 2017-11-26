@@ -1,8 +1,5 @@
-package sample.Model;
+package Model;
 
-import main.java.sample.Model.Gamma;
-
-import java.time.Duration;
 import java.util.Random;
 
 public class DistribucionPoisson implements Distribucion{
@@ -12,7 +9,7 @@ public class DistribucionPoisson implements Distribucion{
         this.lambda = lambda;
     }
 
-    public Duration calcular() {
+    public double calcular() {
         Random generador = new Random();                                        //Inicializamos el generador de números aleatorios
         double U = generador.nextDouble();
         int i = 0;
@@ -21,11 +18,10 @@ public class DistribucionPoisson implements Distribucion{
             F += Math.exp(-lambda) * (Math.pow(lambda, (i/ Gamma.gamma(i+1))));
             i += 1;
         }
-        long quantil = i;  //Generamos el quantil a partir de la probabilidad generada
-        return Duration.ofMinutes(quantil);
+        return i;
     }
 
     public String getName(){
-        return "Poisson";
+        return "poisson";
     }
 }

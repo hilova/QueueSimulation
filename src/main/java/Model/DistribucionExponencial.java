@@ -1,6 +1,5 @@
-package sample.Model;
+package Model;
 
-import java.time.Duration;
 import java.util.Random;
 
 public class DistribucionExponencial implements Distribucion {
@@ -11,13 +10,13 @@ public class DistribucionExponencial implements Distribucion {
     }
 
 
-    public Duration calcular() {
+    public double calcular() {
         Random generador = new Random();                                        //Inicializamos el generador de números aleatorios
-        long quantil = (long)(-1 * Math.log(1-generador.nextDouble())/lambda);  //Generamos el quantil a partir de la probabilidad generada
-        return Duration.ofMinutes(quantil);
+        double quantil = (-1 * Math.log(1-generador.nextDouble())/lambda);  //Generamos el quantil a partir de la probabilidad generada
+        return quantil;
     }
 
     public String getName(){
-        return "Exponencial";
+        return "exponencial";
     }
 }
