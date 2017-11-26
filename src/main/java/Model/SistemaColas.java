@@ -13,7 +13,7 @@ import java.util.Random;
 public class SistemaColas {
     private LinkedBlockingQueue<LocalTime> colaTrabajos; // se guardan los tiempos de llegada de cada trabajo para revisar si han esperado por 2 minutos
     private LinkedList<Servidor> servidoresOciosos;
-    private PriorityQueue<Servidor> servidoresOcupados; // guarda los servidores en orden de acuerd a sus tiempos de salida
+    private PriorityQueue<Servidor> servidoresOcupados; // guarda los servidores en orden de acuerdo a sus tiempos de salida
     private LocalTime tiempoActual, tiempoMax;
     private GeneradorDeTrabajos generadorLlegadas;
     private Estadisticas estadisticas;
@@ -110,7 +110,8 @@ public class SistemaColas {
             if(servidoresOcupados.isEmpty() || generadorLlegadas.getTiempoSiguienteLlegada().isBefore(servidoresOcupados.peek().getTiempoSalida())) {
                 // procesar una llegada
                 //System.out.println(tiempoActual.toString() + ": Entró un trabajo!");
-                estadisticas.añadirLlegadaNueva();
+                estadisticas.añadirLlegadaNueva(colaTrabajos.size());
+
 
                 tiempoActual = generadorLlegadas.getTiempoSiguienteLlegada(); // actualizar tiempo actual
                 if(servidoresOciosos.isEmpty()) {
@@ -155,6 +156,7 @@ public class SistemaColas {
                 } else {
                     // hay trabajos en la cola, eliminar uno y asignarlo al servidor
                     //System.out.println("El servidor fue asignado el siguiente trabajo en la cola\n");
+
                     estadisticas.añadirTiempoDeEsperaEnCola(Duration.ofMinutes(tiempoActual.minusMinutes(colaTrabajos.peek().getMinute()).minusHours(colaTrabajos.peek().getHour()).getMinute()) );
                     colaTrabajos.poll();
                     // eliminar y reinsertar el servidor para actualizar el heap
