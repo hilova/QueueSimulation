@@ -1,4 +1,4 @@
-package View;
+package main.java;
 
 import Model.SistemaColas;
 import Model.Distribucion;
