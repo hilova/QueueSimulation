@@ -16,9 +16,11 @@ public class Estadisticas {
 
     // TODO (c) the expected length of a queue (excluding the jobs receiving service), when a new job arrives
     private double tamañoDeColaTotalPorLlegada;
+    private LinkedList<Integer> longitudesEnCola;
 
     // TODO (d) the expected maximum waiting time during a 10-hour day
     private Duration tiempoDeEsperaMaximoTotal;
+    private LinkedList<Integer> longitudesEnColaMax;
 
     // TODO (e) the expected maximum length of a queue during a 10-hour day
     private Duration tiempoDeEsperaMinimoTotal;
@@ -51,8 +53,9 @@ public class Estadisticas {
         trabajosRestantesAlFinalizarTotales = 0;
         trabajosAbandonaronColaTotales = 0;
         simulacionesEjecutadas = 0;
-        llegadasTotales = 0;
+        //llegadasTotales = 0;
         trabajosFinalizadosTotales = 0;
+        longitudesEnCola = new LinkedList<Integer>();
         duracionesEnCola = new LinkedList<Duration>();
     }
 
@@ -63,62 +66,78 @@ public class Estadisticas {
     private int simulacionesEjecutadas;
 
     // para calcular (c), (f), (g), (k)
-    private int llegadasTotales;
+    //private int llegadasTotales;
 
     // para calcular (b)
     private int trabajosFinalizadosTotales;
 
 
     //Registra una llegada nueva
-    public void añadirLlegadaNueva(){
-        llegadasTotales++;
+    public void añadirLlegadaNueva(Integer longitudDeCola) {
+        longitudesEnCola.add(longitudDeCola);
     }
 
     //Registra un tiempo de espera en la cola. Nota: Si no pasó por cola el tiempo es 0.
-    public void añadirTiempoDeEsperaEnCola(Duration esperaEnCola){
+    public void añadirTiempoDeEsperaEnCola(Duration esperaEnCola) {
         duracionesEnCola.add(esperaEnCola);
     }
 
     // TODO enviar tiempo de respuesta en SistemaColas.java
-    public void añadirTrabajoFinalizado(String nombreServidor /*, Duration tiempoRespuesta*/){
+    public void añadirTrabajoFinalizado(String nombreServidor /*, Duration tiempoRespuesta*/) {
         if (trabajosProcesadosTotalesPorServidor.containsKey(nombreServidor)) {
-            trabajosProcesadosTotalesPorServidor.put(nombreServidor, 1+trabajosProcesadosTotalesPorServidor.get(nombreServidor));
+            trabajosProcesadosTotalesPorServidor.put(nombreServidor, 1 + trabajosProcesadosTotalesPorServidor.get(nombreServidor));
         } else {
-            trabajosProcesadosTotalesPorServidor.put(nombreServidor,1);
+            trabajosProcesadosTotalesPorServidor.put(nombreServidor, 1);
         }
 
         trabajosFinalizadosTotales++;
         //tiempoDeRespuestaTotal.plus(tiempoRespuesta);
     }
 
-    public void añadirTrabajosRestantesAlFinalizar(int trabajos){
-        trabajosRestantesAlFinalizarTotales+=trabajos;
+    public void añadirTrabajosRestantesAlFinalizar(int trabajos) {
+        trabajosRestantesAlFinalizarTotales += trabajos;
     }
 
     public void añadirSimulacion() {
         simulacionesEjecutadas++;
     }
 
-    public void añadirLlegada(){
+   /*public void añadirLlegada(){
+
         llegadasTotales++;
-    }
+    }*/
 
     public String procesarDatos() {
-        String resultado = "Simulaciones ejecutadas: "+simulacionesEjecutadas+"\n";
+        String resultado = "Simulaciones ejecutadas: " + simulacionesEjecutadas + "\n";
 
         //Cálculo del tiempo esperado de espera de un trabajo
         double waitingTime = 0;
-        for (Duration duration: duracionesEnCola) waitingTime += duration.toMinutes();
-        resultado += "(a) Tiempo esperado de espera de un trabajo cualquiera (Wq): " + waitingTime/duracionesEnCola.size() + " min\n";
+        for (Duration duration : duracionesEnCola) waitingTime += duration.toMinutes();
+        resultado += "(a) Tiempo esperado de espera de un trabajo cualquiera (Wq): " + waitingTime / duracionesEnCola.size() + " min\n";
 
+        double longitud = 0;
+        for (Integer i : longitudesEnCola) longitud += i;
+        resultado += "(c) Longitud esperada de Cola (Lq):" + longitud / longitudesEnCola.size() + " trabajos\n";
 
-        resultado+="(h) Trabajos procesados esperados: "+((double)trabajosFinalizadosTotales/simulacionesEjecutadas);
-        for(String nombre : trabajosProcesadosTotalesPorServidor.keySet()) {
-            resultado+="\n  procesados por "+nombre+": "+((double)trabajosProcesadosTotalesPorServidor.get(nombre)/simulacionesEjecutadas);
+        double max = 0;
+
+        for (Integer i : longitudesEnCola) {
+            if (i > max) {
+                max = i;
+            }
         }
-        resultado+="\n(j) Trabajos restantes esperados a las 6:03pm: "+((double)trabajosRestantesAlFinalizarTotales/simulacionesEjecutadas)+"\n";
+
+            resultado += "(e) Longitud máxima esperada en la cola es: " + max +" trabajos \n";
 
 
-        return resultado;
+            resultado += "(h) Trabajos procesados esperados: " + ((double) trabajosFinalizadosTotales / simulacionesEjecutadas);
+            for (String nombre : trabajosProcesadosTotalesPorServidor.keySet()) {
+                resultado += "\n  procesados por " + nombre + ": " + ((double) trabajosProcesadosTotalesPorServidor.get(nombre) / simulacionesEjecutadas);
+            }
+            resultado += "\n(j) Trabajos restantes esperados a las 6:03pm: " + ((double) trabajosRestantesAlFinalizarTotales / simulacionesEjecutadas) + "\n";
+
+
+            return resultado;
+        }
     }
-}
+
