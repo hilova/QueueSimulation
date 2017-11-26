@@ -1,5 +1,6 @@
-package sample.Model;
+package Model;
 
+import java.time.Duration;
 import java.time.LocalTime;
 
 public class GeneradorDeTrabajos {
@@ -15,7 +16,7 @@ public class GeneradorDeTrabajos {
     }
 
     public void generarSiguienteLlegada(LocalTime tiempoActual) {
-        tiempoSiguienteLlegada = tiempoActual.plus(distribucionTiempoLlegadas.calcular());
+        tiempoSiguienteLlegada = tiempoActual.plus(Duration.ofNanos(Math.round(distribucionTiempoLlegadas.calcular()*60000000000L)));
     }
 
     public LocalTime getTiempoSiguienteLlegada() {

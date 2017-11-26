@@ -1,9 +1,11 @@
-package sample.Model;
+package Model;
+import java.time.Duration;
 import java.time.LocalTime;
 
 public class Servidor implements Comparable{
     private Distribucion distribucionTiempoServicio;  // distribucion que describe el tiempo de servicio
     private LocalTime tiempoSalida; // tiempo de salida del trabajo actual
+    private Duration tiempoServicio;
     private boolean ocupado;
     private String nombre;
 
@@ -16,7 +18,9 @@ public class Servidor implements Comparable{
 
     public void asignarTrabajo(LocalTime tiempoActual) {
         ocupado = true; // ahora esta ocupado
-        tiempoSalida = tiempoActual.plus(distribucionTiempoServicio.calcular()); // calcular su tiempo de salida
+        // Duration requiere un int, se transforma a nanosegundos para obtener la mejor precisión
+        tiempoServicio = Duration.ofNanos(Math.round(distribucionTiempoServicio.calcular()*60000000000L));
+        tiempoSalida = tiempoActual.plus(tiempoServicio); // calcular su tiempo de salida
     }
 
     public void terminarTrabajo() {

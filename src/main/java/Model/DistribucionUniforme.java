@@ -1,6 +1,5 @@
-package sample.Model;
+package Model;
 
-import java.time.Duration;
 import java.util.Random;
 
 public class DistribucionUniforme implements Distribucion {
@@ -12,13 +11,13 @@ public class DistribucionUniforme implements Distribucion {
         this.b = b;
     }
 
-    public Duration calcular() {
+    public double calcular() {
         Random generador = new Random();                            //Inicializamos el generador de números aleatorios
-        long quantil = (long)(a + generador.nextDouble() * (b-a));  //Generamos el quantil a partir de la probabilidad generada
-        return Duration.ofMinutes(quantil);
+        double quantil = (a + generador.nextDouble() * (b-a));  //Generamos el quantil a partir de la probabilidad generada
+        return quantil;
     }
 
     public String getName(){
-        return "Uniforme";
+        return "uniforme";
     }
 }
