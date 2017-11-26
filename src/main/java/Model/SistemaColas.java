@@ -97,6 +97,7 @@ public class SistemaColas {
                 if(tiempoEnCola.toMinutes() >= minutosMaxEnCola) {
                     // excedió 6 minutos, eliminar de la cola
                     //System.out.println(tiempoActual.toString() + ": Se eliminó un trabajo de la cola! Trabajos en espera: "+colaTrabajos.size()+"***************************\n");
+                    estadisticas.añadirTiempoDeEsperaEnCola(Duration.ofMinutes(tiempoMax.getMinute())); //Se agrega un nuevo tiempo a las estadísticas
                     colaTrabajos.poll();
                 } else {
                     // no habrá más trabajos por eliminar
@@ -109,6 +110,7 @@ public class SistemaColas {
             if(servidoresOcupados.isEmpty() || generadorLlegadas.getTiempoSiguienteLlegada().isBefore(servidoresOcupados.peek().getTiempoSalida())) {
                 // procesar una llegada
                 //System.out.println(tiempoActual.toString() + ": Entró un trabajo!");
+                estadisticas.añadirLlegadaNueva();
 
                 tiempoActual = generadorLlegadas.getTiempoSiguienteLlegada(); // actualizar tiempo actual
                 if(servidoresOciosos.isEmpty()) {
@@ -124,6 +126,7 @@ public class SistemaColas {
                     serv = servidoresOciosos.get(servidorEscogido);
 
                     // asignar el trabajo al servidor escogido
+                    estadisticas.añadirTiempoDeEsperaEnCola(Duration.ofMinutes(0)); //Se agrega un nuevo tiempo a las estadísticas
                     serv.asignarTrabajo(tiempoActual);
 
                     //System.out.println("Trabajo asignado a "+ serv.getNombre() +"\n");
@@ -152,8 +155,8 @@ public class SistemaColas {
                 } else {
                     // hay trabajos en la cola, eliminar uno y asignarlo al servidor
                     //System.out.println("El servidor fue asignado el siguiente trabajo en la cola\n");
+                    estadisticas.añadirTiempoDeEsperaEnCola(Duration.ofMinutes(tiempoActual.minusMinutes(colaTrabajos.peek().getMinute()).minusHours(colaTrabajos.peek().getHour()).getMinute()) );
                     colaTrabajos.poll();
-
                     // eliminar y reinsertar el servidor para actualizar el heap
                     serv = servidoresOcupados.poll();
                     serv.asignarTrabajo(tiempoActual);

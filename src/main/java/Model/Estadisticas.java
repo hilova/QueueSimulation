@@ -2,11 +2,14 @@ package Model;
 
 import java.time.Duration;
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 
 public class Estadisticas {
     // SE REGISTRAN LOS TOTALES PARA CALCULAR LOS DATOS AL FINALIZAR
     // TODO (a) the expected waiting time for a randomly selected job
     private Duration tiempoEsperandoEnColaTotal;
+    private LinkedList<Duration> duracionesEnCola;
 
     // TODO (b) the expected response time;
     private Duration tiempoDeRespuestaTotal;
@@ -50,6 +53,7 @@ public class Estadisticas {
         simulacionesEjecutadas = 0;
         llegadasTotales = 0;
         trabajosFinalizadosTotales = 0;
+        duracionesEnCola = new LinkedList<Duration>();
     }
 
     // TODO (k) the expected percentage of jobs that left the queue prematurely
@@ -58,11 +62,22 @@ public class Estadisticas {
     // para calcular (d), (e), (h), (i), (j)
     private int simulacionesEjecutadas;
 
-    // para calcular (a), (c), (f), (g), (k)
+    // para calcular (c), (f), (g), (k)
     private int llegadasTotales;
 
     // para calcular (b)
     private int trabajosFinalizadosTotales;
+
+
+    //Registra una llegada nueva
+    public void añadirLlegadaNueva(){
+        llegadasTotales++;
+    }
+
+    //Registra un tiempo de espera en la cola. Nota: Si no pasó por cola el tiempo es 0.
+    public void añadirTiempoDeEsperaEnCola(Duration esperaEnCola){
+        duracionesEnCola.add(esperaEnCola);
+    }
 
     // TODO enviar tiempo de respuesta en SistemaColas.java
     public void añadirTrabajoFinalizado(String nombreServidor /*, Duration tiempoRespuesta*/){
@@ -90,6 +105,13 @@ public class Estadisticas {
 
     public String procesarDatos() {
         String resultado = "Simulaciones ejecutadas: "+simulacionesEjecutadas+"\n";
+
+        //Cálculo del tiempo esperado de espera de un trabajo
+        double waitingTime = 0;
+        for (Duration duration: duracionesEnCola) waitingTime += duration.toMinutes();
+        resultado += "(a) Tiempo esperado de espera de un trabajo cualquiera (Wq): " + waitingTime/duracionesEnCola.size() + " min\n";
+
+
         resultado+="(h) Trabajos procesados esperados: "+((double)trabajosFinalizadosTotales/simulacionesEjecutadas);
         for(String nombre : trabajosProcesadosTotalesPorServidor.keySet()) {
             resultado+="\n  procesados por "+nombre+": "+((double)trabajosProcesadosTotalesPorServidor.get(nombre)/simulacionesEjecutadas);
