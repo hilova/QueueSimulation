@@ -3,7 +3,6 @@ package Model;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.PriorityQueue;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -59,22 +58,22 @@ public class SistemaColas {
     }
 
     public void iniciarSimulacion(int duracionHoras,int minutosMaxEnCola) {
-        // registrar que se corre una nueva simulacion
-        estadisticas.añadirSimulacion();
 
         // preparar estructuras y variables
-        // primero liberar los servidores que seguían ocupados
+        // poner las horas
+        tiempoActual = LocalTime.of(8,0);      // reloj se empieza a las 6 am
+        tiempoMax = tiempoActual.plusHours(duracionHoras);  // tiempo en que termina de acuerdo al parámetro recibido
+        // liberar los servidores que seguían ocupados
         for(Servidor s : servidoresOcupados) {
-            s.terminarTrabajo();
+            s.terminarTrabajo(tiempoActual);
         }
-        // luego transferirlos a la lista de servidores ociosos
+        // transferirlos a la lista de servidores ociosos
         servidoresOciosos.addAll(servidoresOcupados);
         servidoresOcupados.clear();
         // limpiar la cola de trabajos
         colaTrabajos.clear();
-        // poner las horas
-        tiempoActual = LocalTime.of(8,0);      // reloj se empieza a las 6 am
-        tiempoMax = tiempoActual.plusHours(duracionHoras);  // tiempo en que termina de acuerdo al parámetro recibido
+
+        Duration duracionMaxEnCola = Duration.ofMinutes(minutosMaxEnCola);
 
         Duration tiempoEnCola;                              // para calcular el tiempo que un trabajo lleva en la cola
 
@@ -90,34 +89,17 @@ public class SistemaColas {
         // lógica principal de la simulación:
         // mientras no se haya terminado el tiempo
         while(tiempoActual.isBefore(tiempoMax)) {
-            // buscar trabajos más antiguos que 6 minutos
-            while(!colaTrabajos.isEmpty()) {
-                // cola no vacía, calcular tiempo del trabajo más antiguo
-                tiempoEnCola = Duration.between(colaTrabajos.peek(), tiempoActual);
-                if(tiempoEnCola.toMinutes() >= minutosMaxEnCola) {
-                    // excedió 6 minutos, eliminar de la cola
-                    //System.out.println(tiempoActual.toString() + ": Se eliminó un trabajo de la cola! Trabajos en espera: "+colaTrabajos.size()+"***************************\n");
-                    estadisticas.añadirTiempoDeEsperaEnCola(Duration.ofMinutes(tiempoMax.getMinute())); //Se agrega un nuevo tiempo a las estadísticas
-                    colaTrabajos.poll();
-                } else {
-                    // no habrá más trabajos por eliminar
-                    break;
-                }
-            }
 
             // comparar el tiempo de la siguiente llegada con el servidor con la salida más temprana
             // servidoresOcuados.peek() devuelve este servidor
             if(servidoresOcupados.isEmpty() || generadorLlegadas.getTiempoSiguienteLlegada().isBefore(servidoresOcupados.peek().getTiempoSalida())) {
                 // procesar una llegada
-                //System.out.println(tiempoActual.toString() + ": Entró un trabajo!");
-                estadisticas.añadirLlegadaNueva(colaTrabajos.size());
+                estadisticas.añadirLlegadaNueva(colaTrabajos.size(), servidoresOciosos.size());
 
 
                 tiempoActual = generadorLlegadas.getTiempoSiguienteLlegada(); // actualizar tiempo actual
                 if(servidoresOciosos.isEmpty()) {
                     // no hay servidores disponibles, añadir el trabajo a la cola
-                    //System.out.println("Ningún servidor disponible, se añadió a la cola\n");
-
                     colaTrabajos.add(LocalTime.from(tiempoActual));
 
                 } else {
@@ -127,10 +109,8 @@ public class SistemaColas {
                     serv = servidoresOciosos.get(servidorEscogido);
 
                     // asignar el trabajo al servidor escogido
-                    estadisticas.añadirTiempoDeEsperaEnCola(Duration.ofMinutes(0)); //Se agrega un nuevo tiempo a las estadísticas
+                    estadisticas.añadirTiempoOciosoAServidor(serv.getNombre(), serv.getTiempoSalida(), tiempoActual);  // Se agrega el tiempo ocioso del servidor
                     serv.asignarTrabajo(tiempoActual);
-
-                    //System.out.println("Trabajo asignado a "+ serv.getNombre() +"\n");
 
                     // transferirlo a la lista de servidores ocupados
                     servidoresOcupados.add(serv);
@@ -140,24 +120,37 @@ public class SistemaColas {
 
             } else {
                 // procesar una salida en el servidor
-                // registrar estadística: cual servidor terminó el trabajo TODO enviar tiempo que tomó procesar para responder (b)
-                estadisticas.añadirTrabajoFinalizado(servidoresOcupados.peek().getNombre(), servidoresOcupados.peek().getTiempoDeEntradaAlSistema(),servidoresOcupados.peek().getTiempoSalida());
-
                 tiempoActual = servidoresOcupados.peek().getTiempoSalida(); // actualizar tiempo actual
+                // registrar estadística: cual servidor terminó el trabajo
+                estadisticas.añadirTrabajoFinalizado(servidoresOcupados.peek().getNombre(), servidoresOcupados.peek().getTiempoDeEntradaAlSistema(),tiempoActual);
+
+                // actualizar la cola eliminando trabajos que hayan excedido el tiempo límite
+                while(!colaTrabajos.isEmpty()) {
+                    // cola no vacía, calcular tiempo del trabajo más antiguo
+                    tiempoEnCola = Duration.between(colaTrabajos.peek(), tiempoActual).abs();
+                    if(tiempoEnCola.compareTo(duracionMaxEnCola) >= 0) {
+                        // excedió el tiempo maximo, eliminar de la cola
+                        estadisticas.añadirTiempoDeEsperaEnCola(duracionMaxEnCola); // El trabajo fue eliminado, se agrega el tiempo maximo a la estadisticas)
+                        estadisticas.añadirTrabajoAbandonoLaCola();                 // Se registra que el trabajo abandonó la cola
+                        colaTrabajos.poll();
+                    } else {
+                        // no habrá más trabajos por eliminar
+                        break;
+                    }
+                }
 
                 if(colaTrabajos.isEmpty()){
                     // cola vacía, terminar el trabajo del servidor
-                    servidoresOcupados.peek().terminarTrabajo();
+                    servidoresOcupados.peek().terminarTrabajo(tiempoActual);
 
-                    //System.out.println("La cola estaba vacía, el servidor quedó ocioso\n");
                     // transferirlo a la lista de servidores ociosos
                     servidoresOciosos.add(servidoresOcupados.poll());
 
                 } else {
-                    // hay trabajos en la cola, eliminar uno y asignarlo al servidor18`887//
-                    //System.out.println("El servidor fue asignado el siguiente trabajo en la cola\n");
+                    // hay trabajos en la cola, eliminar uno y asignarlo al servidor
 
-                    estadisticas.añadirTiempoDeEsperaEnCola(Duration.ofMinutes(tiempoActual.minusMinutes(colaTrabajos.peek().getMinute()).minusHours(colaTrabajos.peek().getHour()).getMinute()) );
+                    // registrar el tiempo de espera del trabajo
+                    estadisticas.añadirTiempoDeEsperaEnCola(Duration.between(colaTrabajos.peek(), tiempoActual).abs());
 
                     // eliminar y reinsertar el servidor para actualizar el heap
                     serv = servidoresOcupados.poll();
@@ -169,7 +162,7 @@ public class SistemaColas {
 
         }
 
-        estadisticas.añadirTrabajosRestantesAlFinalizar(colaTrabajos.size());
+        estadisticas.terminarSimulacion(colaTrabajos.size());
     }
 
     public Estadisticas getEstadisticas() {
