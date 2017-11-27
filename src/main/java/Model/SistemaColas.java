@@ -140,7 +140,7 @@ public class SistemaColas {
             } else {
                 // procesar una salida en el servidor
                 // registrar estadística: cual servidor terminó el trabajo TODO enviar tiempo que tomó procesar para responder (b)
-                estadisticas.añadirTrabajoFinalizado(servidoresOcupados.peek().getNombre());
+                estadisticas.añadirTrabajoFinalizado(servidoresOcupados.peek().getNombre(), servidoresOcupados.peek().getTiempoDeEntradaAlSistema(),servidoresOcupados.peek().getTiempoSalida());
 
                 tiempoActual = servidoresOcupados.peek().getTiempoSalida(); // actualizar tiempo actual
 
@@ -153,13 +153,13 @@ public class SistemaColas {
                     servidoresOciosos.add(servidoresOcupados.poll());
 
                 } else {
-                    // hay trabajos en la cola, eliminar uno y asignarlo al servidor
+                    // hay trabajos en la cola, eliminar uno y asignarlo al servidor18`887//
                     //System.out.println("El servidor fue asignado el siguiente trabajo en la cola\n");
                     estadisticas.añadirTiempoDeEsperaEnCola(Duration.ofMinutes(tiempoActual.minusMinutes(colaTrabajos.peek().getMinute()).minusHours(colaTrabajos.peek().getHour()).getMinute()) );
-                    colaTrabajos.poll();
+
                     // eliminar y reinsertar el servidor para actualizar el heap
                     serv = servidoresOcupados.poll();
-                    serv.asignarTrabajo(tiempoActual);
+                    serv.asignarTrabajo(tiempoActual,colaTrabajos.poll());
                     servidoresOcupados.add(serv);
                 }
 

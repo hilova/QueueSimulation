@@ -35,7 +35,7 @@ public class Main /*extends Application*/ {
 
         SistemaColas sim = new SistemaColas(distsServidores, distLlegadas);
 
-        for(int i =0; i<10000; i++) {
+        for(int i =0; i<1000; i++) {
             //sim = new SistemaColas(distsServidores, distLlegadas, sim.getEstadisticas());
             sim.iniciarSimulacion(10, 6);
         }
