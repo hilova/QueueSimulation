@@ -29,17 +29,18 @@ public class Servidor implements Comparable{
         tiempoSalida = tiempoActual.plus(tiempoServicio); // calcular su tiempo de salida
     }
 
+    // para poder registrar los tiempos de respuesta, recibe el tiempo en que llegó el trabajo
     public void asignarTrabajo(LocalTime tiempoActual, LocalTime tiempoDeEntradaAlSistema) {
         ocupado = true; // ahora esta ocupado
-        this.tiempoDeEntradaAlSistema = tiempoDeEntradaAlSistema;
+        this.tiempoDeEntradaAlSistema = LocalTime.from(tiempoDeEntradaAlSistema);
         // Duration requiere un int, se transforma a nanosegundos para obtener la mejor precisión
         tiempoServicio = Duration.ofNanos(Math.round(distribucionTiempoServicio.calcular()*60000000000L));
         tiempoSalida = tiempoActual.plus(tiempoServicio); // calcular su tiempo de salida
     }
 
-    public void terminarTrabajo() {
+    public void terminarTrabajo(LocalTime tiempoActual) {
         ocupado = false; // está ocioso
-        tiempoSalida = LocalTime.MAX;  // conviene asignarlo al tiempo máximo para hacer comparaciones con otros servidores
+        tiempoSalida = LocalTime.from(tiempoActual);  // se asigna al tiempo actual para poder registrar cuanto tiempo el servidor he estado ocioso
     }
 
     public LocalTime getTiempoSalida() {
