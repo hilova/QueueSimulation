@@ -3,7 +3,6 @@ package Model;
 import java.time.Duration;
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
-import java.time.temporal.TemporalField;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -20,9 +19,11 @@ public class Estadisticas {
 
     // TODO (c) the expected length of a queue (excluding the jobs receiving service), when a new job arrives
     private double tamañoDeColaTotalPorLlegada;
+    private LinkedList<Integer> longitudesEnCola;
 
     // TODO (d) the expected maximum waiting time during a 10-hour day
     private Duration tiempoDeEsperaMaximoTotal;
+    private LinkedList<Integer> longitudesEnColaMax;
 
     // TODO (e) the expected maximum length of a queue during a 10-hour day
     private Duration tiempoDeEsperaMinimoTotal;
@@ -55,8 +56,9 @@ public class Estadisticas {
         trabajosRestantesAlFinalizarTotales = 0;
         trabajosAbandonaronColaTotales = 0;
         simulacionesEjecutadas = 0;
-        llegadasTotales = 0;
+        //llegadasTotales = 0;
         trabajosFinalizadosTotales = 0;
+        longitudesEnCola = new LinkedList<Integer>();
         duracionesEnCola = new LinkedList<Duration>();
         duracionesDeRespuesta = new LinkedList<Duration>();
     }
@@ -68,19 +70,19 @@ public class Estadisticas {
     private int simulacionesEjecutadas;
 
     // para calcular (c), (f), (g), (k)
-    private int llegadasTotales;
+    //private int llegadasTotales;
 
     // para calcular (b)
     private int trabajosFinalizadosTotales;
 
 
     //Registra una llegada nueva
-    public void añadirLlegadaNueva(){
-        llegadasTotales++;
+    public void añadirLlegadaNueva(Integer longitudDeCola) {
+        longitudesEnCola.add(longitudDeCola);
     }
 
     //Registra un tiempo de espera en la cola. Nota: Si no pasó por cola el tiempo es 0.
-    public void añadirTiempoDeEsperaEnCola(Duration esperaEnCola){
+    public void añadirTiempoDeEsperaEnCola(Duration esperaEnCola) {
         duracionesEnCola.add(esperaEnCola);
     }
 
@@ -98,19 +100,20 @@ public class Estadisticas {
     }
 
     public void añadirTrabajosRestantesAlFinalizar(int trabajos){
-        trabajosRestantesAlFinalizarTotales+=trabajos;
+        trabajosRestantesAlFinalizarTotales += trabajos;
     }
 
     public void añadirSimulacion() {
         simulacionesEjecutadas++;
     }
 
-    public void añadirLlegada(){
+   /*public void añadirLlegada(){
+
         llegadasTotales++;
-    }
+    }*/
 
     public String procesarDatos() {
-        String resultado = "Simulaciones ejecutadas: "+simulacionesEjecutadas+"\n";
+        String resultado = "Simulaciones ejecutadas: " + simulacionesEjecutadas + "\n";
 
         //Cálculo del tiempo esperado de espera de un trabajo
         Duration waitingTime = Duration.ofNanos(0);
@@ -118,13 +121,25 @@ public class Estadisticas {
         waitingTime = waitingTime.dividedBy(duracionesEnCola.size());
         resultado += "(a) Tiempo esperado de espera de un trabajo cualquiera (Wq): " + waitingTime.getSeconds()/60 + " min " + waitingTime.getSeconds() % 60 + " s\n";
 
-
         //Cálculo del tiempo esperado de respuesta
         Duration responseTime = Duration.ofNanos(0);
         for (Duration duration: duracionesDeRespuesta)
             responseTime = responseTime.plus(duration);
         responseTime = responseTime.dividedBy(duracionesDeRespuesta.size());
         resultado += "(b) Tiempo esperado de respuesta (W): " + responseTime.getSeconds()/60 + " min " + responseTime.getSeconds() % 60 + " s\n";
+
+        double longitud = 0;
+        for (Integer i : longitudesEnCola) longitud += i;
+        resultado += "(c) Longitud esperada de Cola (Lq):" + longitud / longitudesEnCola.size() + " trabajos\n";
+
+        double max = 0;
+
+        for (Integer i : longitudesEnCola) {
+            if (i > max) {
+                max = i;
+            }
+        }
+        resultado += "(e) Longitud máxima esperada en la cola es: " + max +" trabajos \n";
 
         resultado+="(h) Trabajos procesados esperados: "+((double)trabajosFinalizadosTotales/simulacionesEjecutadas);
         for(String nombre : trabajosProcesadosTotalesPorServidor.keySet()) {
