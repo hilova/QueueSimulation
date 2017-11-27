@@ -63,13 +63,13 @@ public class SistemaColas {
         // poner las horas
         tiempoActual = LocalTime.of(8,0);      // reloj se empieza a las 6 am
         tiempoMax = tiempoActual.plusHours(duracionHoras);  // tiempo en que termina de acuerdo al parámetro recibido
-        // liberar los servidores que seguían ocupados
-        for(Servidor s : servidoresOcupados) {
-            s.terminarTrabajo(tiempoActual);
-        }
-        // transferirlos a la lista de servidores ociosos
+        // transferir todos los servidores a la lista de servidores ociosos
         servidoresOciosos.addAll(servidoresOcupados);
         servidoresOcupados.clear();
+        // liberar los servidores que seguían ocupados
+        for(Servidor s : servidoresOciosos) {
+            s.terminarTrabajo(tiempoActual);
+        }
         // limpiar la cola de trabajos
         colaTrabajos.clear();
 
@@ -109,7 +109,7 @@ public class SistemaColas {
                     serv = servidoresOciosos.get(servidorEscogido);
 
                     // asignar el trabajo al servidor escogido
-                    estadisticas.añadirTiempoOciosoAServidor(serv.getNombre(), serv.getTiempoSalida(), tiempoActual);  // Se agrega el tiempo ocioso del servidor
+                    estadisticas.añadirTiempoOciosoAServidor(serv.getNombre(), serv.getTiempoDeInicioDeOcio(), tiempoActual);  // Se agrega el tiempo ocioso del servidor
                     serv.asignarTrabajo(tiempoActual);
 
                     // transferirlo a la lista de servidores ocupados

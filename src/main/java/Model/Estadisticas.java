@@ -211,7 +211,7 @@ public class Estadisticas {
         }
 
         // Trabajos no procesados a las 6:03pm
-        resultado+="\n(j) Trabajos restantes esperados a las 6:03pm: "+((double)trabajosRestantesAlFinalizarTotales/simulacionesEjecutadas)+"\n";
+        resultado+="\n(j) Trabajos restantes esperados a las 6:03pm: "+redondear((double)trabajosRestantesAlFinalizarTotales/simulacionesEjecutadas)+"\n";
 
         // Trabajos esperados que abandonan la cola
         double trabajosAbandonaronColaEsperados = (double) trabajosAbandonaronColaTotales/llegadasTotales * 100;
