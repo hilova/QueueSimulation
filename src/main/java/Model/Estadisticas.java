@@ -1,6 +1,8 @@
 package Model;
 
 import java.time.Duration;
+import java.time.LocalTime;
+import java.time.temporal.ChronoUnit;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -13,6 +15,7 @@ public class Estadisticas {
 
     // TODO (b) the expected response time;
     private Duration tiempoDeRespuestaTotal;
+    private LinkedList<Duration> duracionesDeRespuesta;
 
     // TODO (c) the expected length of a queue (excluding the jobs receiving service), when a new job arrives
     private double tamañoDeColaTotalPorLlegada;
@@ -57,6 +60,7 @@ public class Estadisticas {
         trabajosFinalizadosTotales = 0;
         longitudesEnCola = new LinkedList<Integer>();
         duracionesEnCola = new LinkedList<Duration>();
+        duracionesDeRespuesta = new LinkedList<Duration>();
     }
 
     // TODO (k) the expected percentage of jobs that left the queue prematurely
@@ -83,18 +87,19 @@ public class Estadisticas {
     }
 
     // TODO enviar tiempo de respuesta en SistemaColas.java
-    public void añadirTrabajoFinalizado(String nombreServidor /*, Duration tiempoRespuesta*/) {
+    public void añadirTrabajoFinalizado(String nombreServidor, LocalTime tiempoDeEntrada, LocalTime tiempoDeSalida){
         if (trabajosProcesadosTotalesPorServidor.containsKey(nombreServidor)) {
-            trabajosProcesadosTotalesPorServidor.put(nombreServidor, 1 + trabajosProcesadosTotalesPorServidor.get(nombreServidor));
+            trabajosProcesadosTotalesPorServidor.put(nombreServidor, 1+trabajosProcesadosTotalesPorServidor.get(nombreServidor));
         } else {
-            trabajosProcesadosTotalesPorServidor.put(nombreServidor, 1);
+            trabajosProcesadosTotalesPorServidor.put(nombreServidor,1);
         }
-
+        LocalTime diferenciaHora = diferenciaEntreLocalTimes(tiempoDeEntrada,tiempoDeSalida);
+        duracionesDeRespuesta.add(traducirLocalTimeADuration(diferenciaHora));
         trabajosFinalizadosTotales++;
         //tiempoDeRespuestaTotal.plus(tiempoRespuesta);
     }
 
-    public void añadirTrabajosRestantesAlFinalizar(int trabajos) {
+    public void añadirTrabajosRestantesAlFinalizar(int trabajos){
         trabajosRestantesAlFinalizarTotales += trabajos;
     }
 
@@ -111,9 +116,17 @@ public class Estadisticas {
         String resultado = "Simulaciones ejecutadas: " + simulacionesEjecutadas + "\n";
 
         //Cálculo del tiempo esperado de espera de un trabajo
-        double waitingTime = 0;
-        for (Duration duration : duracionesEnCola) waitingTime += duration.toMinutes();
-        resultado += "(a) Tiempo esperado de espera de un trabajo cualquiera (Wq): " + waitingTime / duracionesEnCola.size() + " min\n";
+        Duration waitingTime = Duration.ofNanos(0);
+        for (Duration duration: duracionesEnCola) waitingTime = waitingTime.plus(duration);
+        waitingTime = waitingTime.dividedBy(duracionesEnCola.size());
+        resultado += "(a) Tiempo esperado de espera de un trabajo cualquiera (Wq): " + waitingTime.getSeconds()/60 + " min " + waitingTime.getSeconds() % 60 + " s\n";
+
+        //Cálculo del tiempo esperado de respuesta
+        Duration responseTime = Duration.ofNanos(0);
+        for (Duration duration: duracionesDeRespuesta)
+            responseTime = responseTime.plus(duration);
+        responseTime = responseTime.dividedBy(duracionesDeRespuesta.size());
+        resultado += "(b) Tiempo esperado de respuesta (W): " + responseTime.getSeconds()/60 + " min " + responseTime.getSeconds() % 60 + " s\n";
 
         double longitud = 0;
         for (Integer i : longitudesEnCola) longitud += i;
@@ -126,18 +139,53 @@ public class Estadisticas {
                 max = i;
             }
         }
+        resultado += "(e) Longitud máxima esperada en la cola es: " + max +" trabajos \n";
 
-            resultado += "(e) Longitud máxima esperada en la cola es: " + max +" trabajos \n";
-
-
-            resultado += "(h) Trabajos procesados esperados: " + ((double) trabajosFinalizadosTotales / simulacionesEjecutadas);
-            for (String nombre : trabajosProcesadosTotalesPorServidor.keySet()) {
-                resultado += "\n  procesados por " + nombre + ": " + ((double) trabajosProcesadosTotalesPorServidor.get(nombre) / simulacionesEjecutadas);
-            }
-            resultado += "\n(j) Trabajos restantes esperados a las 6:03pm: " + ((double) trabajosRestantesAlFinalizarTotales / simulacionesEjecutadas) + "\n";
-
-
-            return resultado;
+        resultado+="(h) Trabajos procesados esperados: "+((double)trabajosFinalizadosTotales/simulacionesEjecutadas);
+        for(String nombre : trabajosProcesadosTotalesPorServidor.keySet()) {
+            resultado+="\n  procesados por "+nombre+": "+((double)trabajosProcesadosTotalesPorServidor.get(nombre)/simulacionesEjecutadas);
         }
+        resultado+="\n(j) Trabajos restantes esperados a las 6:03pm: "+((double)trabajosRestantesAlFinalizarTotales/simulacionesEjecutadas)+"\n";
+
+
+        return resultado;
     }
 
+    private LocalTime diferenciaEntreLocalTimes(LocalTime a, LocalTime b){
+        //LocalTime a = LocalTime.of(1984, 12, 16, 7, 45, 55);
+        //LocalTime b = LocalTime.of(2014, 9, 10, 6, 40, 45);
+
+
+        LocalTime tempDateTime = LocalTime.from( a );
+
+        //tempDateTime.minusNanos((long)b.getNano());
+        long nanos = a.until( b, ChronoUnit.NANOS);
+        long seconds = nanos / 1000000000;
+        long minutes = seconds / 60;
+        long hours = minutes / 60;
+        nanos = nanos % 1000000000;
+        seconds = seconds % 60;
+        LocalTime result = LocalTime.of((int)hours,(int)minutes,(int)seconds,(int)nanos);
+        /*tempDateTime = tempDateTime.plusNanos( nanos );*/
+/*
+
+        tempDateTime = tempDateTime.plusSeconds( seconds );
+
+
+        tempDateTime = tempDateTime.plusMinutes( minutes );
+
+        long hours = tempDateTime.until( b, ChronoUnit.HOURS);
+        tempDateTime = tempDateTime.plusHours( hours );*/
+        return  result;
+    }
+
+    private Duration traducirLocalTimeADuration(LocalTime time){
+        long nanos = 0;
+        long seconds = 0;
+        nanos += time.getNano();
+        seconds += time.getSecond();
+        seconds += time.getMinute() * 60;
+        seconds += time.getHour() * 60 * 60;
+        return Duration.ofSeconds(seconds,nanos);
+    }
+}

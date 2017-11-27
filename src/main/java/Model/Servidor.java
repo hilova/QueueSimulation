@@ -6,6 +6,7 @@ public class Servidor implements Comparable{
     private Distribucion distribucionTiempoServicio;  // distribucion que describe el tiempo de servicio
     private LocalTime tiempoSalida; // tiempo de salida del trabajo actual
     private Duration tiempoServicio;
+    private LocalTime tiempoDeEntradaAlSistema;
     private boolean ocupado;
     private String nombre;
 
@@ -16,8 +17,21 @@ public class Servidor implements Comparable{
         this.nombre = nombre;
     }
 
+    public LocalTime getTiempoDeEntradaAlSistema(){
+        return tiempoDeEntradaAlSistema;
+    }
+
     public void asignarTrabajo(LocalTime tiempoActual) {
         ocupado = true; // ahora esta ocupado
+        tiempoDeEntradaAlSistema = tiempoActual;
+        // Duration requiere un int, se transforma a nanosegundos para obtener la mejor precisión
+        tiempoServicio = Duration.ofNanos(Math.round(distribucionTiempoServicio.calcular()*60000000000L));
+        tiempoSalida = tiempoActual.plus(tiempoServicio); // calcular su tiempo de salida
+    }
+
+    public void asignarTrabajo(LocalTime tiempoActual, LocalTime tiempoDeEntradaAlSistema) {
+        ocupado = true; // ahora esta ocupado
+        this.tiempoDeEntradaAlSistema = tiempoDeEntradaAlSistema;
         // Duration requiere un int, se transforma a nanosegundos para obtener la mejor precisión
         tiempoServicio = Duration.ofNanos(Math.round(distribucionTiempoServicio.calcular()*60000000000L));
         tiempoSalida = tiempoActual.plus(tiempoServicio); // calcular su tiempo de salida
