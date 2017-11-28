@@ -17,6 +17,7 @@ public class SistemaColas {
     private GeneradorDeTrabajos generadorLlegadas;
     private Estadisticas estadisticas;
 
+
     public SistemaColas(Distribucion[] distsServidores, Distribucion distLlegadas, Estadisticas estadisticas) {
         colaTrabajos = new LinkedBlockingQueue<LocalTime>();
         servidoresOciosos = new LinkedList<Servidor>();

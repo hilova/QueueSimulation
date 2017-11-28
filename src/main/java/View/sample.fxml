@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.collections.*?>
 <?import javafx.scene.chart.*?>
 <?import javafx.geometry.*?>
 <?import javafx.scene.text.*?>
@@ -11,16 +12,75 @@
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
+<?import javafx.collections.FXCollections?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controller.Controller">
+<BorderPane maxHeight="600.0" maxWidth="800.0" minHeight="600.0" minWidth="800.0" prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controller.Controller">
    <right>
       <Accordion BorderPane.alignment="CENTER">
         <panes>
+          <TitledPane animated="false" text="Distribucion de entrada">
+            <content>
+              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                     <children>
+                         <ComboBox fx:id="distribucionesEntradaSelector" layoutX="17.0" layoutY="34.0" onAction="#changeParamBoxesEntrada" prefHeight="25.0" prefWidth="177.0" promptText="Seleccione distribucion...">
+                             <items>
+                                 <FXCollections fx:factory="observableArrayList">
+                                     <String fx:value="Item 1" />
+                                     <String fx:value="Item 2" />
+                                     <String fx:value="Item 3" />
+                                 </FXCollections>
+                             </items>
+                         </ComboBox>
+                        <Label layoutX="14.0" layoutY="14.0" text="Funcion de densidad" />
+                        <TextField fx:id="paramEntrada" alignment="CENTER_RIGHT" layoutX="74.0" layoutY="68.0" prefHeight="25.0" prefWidth="120.0" text="2" visible="false" />
+                        <Label fx:id="lblParam1" layoutX="17.0" layoutY="72.0" text="Mu" visible="false" />
+                     </children>
+                  </AnchorPane>
+            </content>
+          </TitledPane>
+            <TitledPane animated="false" layoutX="10.0" layoutY="10.0" text="Distribuciones de salida">
+               <content>
+                  <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                     <children>
+                        <Label fx:id="lblParam2Serv0" layoutX="105.0" layoutY="65.0" text="Mu" visible="false" />
+                        <TextField fx:id="param2Serv0" alignment="CENTER_RIGHT" layoutX="130.0" layoutY="61.0" prefHeight="25.0" prefWidth="64.0" text="3" visible="false" />
+                        <Label layoutX="14.0" layoutY="14.0" text="Servidor 1" />
+                        <ComboBox fx:id="distribucionServidor0Selector" layoutX="14.0" layoutY="31.0" onAction="#changeParamBoxesServidor0" prefHeight="25.0" prefWidth="179.0" promptText="Seleccione distribucion..." />
+                        <Label fx:id="lblParam1Serv0" layoutX="14.0" layoutY="65.0" text="Alpha" visible="false" />
+                        <Label fx:id="lblParam1Serv1" layoutX="14.0" layoutY="146.0" text="Alpha" visible="false" />
+                        <TextField fx:id="param1Serv1" alignment="CENTER_RIGHT" layoutX="48.0" layoutY="142.0" prefHeight="25.0" prefWidth="53.0" text="5" visible="false" />
+                        <ComboBox fx:id="distribucionServidor1Selector" layoutX="14.0" layoutY="112.0" onAction="#changeParamBoxesServidor1" prefHeight="25.0" prefWidth="179.0" promptText="Seleccione distribucion..." />
+                        <Label layoutX="14.0" layoutY="95.0" text="Servidor 2" />
+                        <TextField fx:id="param2Serv1" alignment="CENTER_RIGHT" layoutX="131.0" layoutY="142.0" prefHeight="25.0" prefWidth="57.0" text="2" visible="false" />
+                        <Label fx:id="lblParam2Serv1" layoutX="106.0" layoutY="146.0" text="Mu" visible="false" />
+                        <Label fx:id="lblParam2Serv2" layoutX="108.0" layoutY="229.0" text="Mu" visible="false" />
+                        <TextField fx:id="param2Serv2" alignment="CENTER_RIGHT" layoutX="133.0" layoutY="225.0" prefHeight="25.0" prefWidth="57.0" text="0.3" visible="false" />
+                        <Label layoutX="14.0" layoutY="178.0" text="Servidor 3" />
+                        <ComboBox fx:id="distribucionServidor2Selector" layoutX="14.0" layoutY="195.0" onAction="#changeParamBoxesServidor2" prefHeight="25.0" prefWidth="179.0" promptText="Seleccione distribucion..." />
+                        <Label fx:id="lblParam1Serv3" layoutX="14.0" layoutY="313.0" text="a" visible="false" />
+                        <TextField fx:id="param1Serv3" alignment="CENTER_RIGHT" layoutX="30.0" layoutY="309.0" prefHeight="25.0" prefWidth="70.0" text="4" visible="false" />
+                        <ComboBox fx:id="distribucionServidor3Selector" layoutX="14.0" layoutY="279.0" onAction="#changeParamBoxesServidor3" prefHeight="25.0" prefWidth="179.0" promptText="Seleccione distribucion..." />
+                        <Label layoutX="17.0" layoutY="262.0" text="Servidor 4" />
+                        <TextField fx:id="param2Serv3" alignment="CENTER_RIGHT" layoutX="124.0" layoutY="309.0" prefHeight="25.0" prefWidth="66.0" text="9" visible="false" />
+                        <Label fx:id="lblParam2Serv3" layoutX="108.0" layoutY="313.0" text="b" visible="false" />
+                        <TextField fx:id="param1Serv0" alignment="CENTER_RIGHT" layoutX="48.0" layoutY="61.0" prefHeight="25.0" prefWidth="53.0" text="7" visible="false" />
+                        <Label fx:id="lblParam1Serv2" layoutX="15.0" layoutY="229.0" text="Alpha" visible="false" />
+                        <TextField fx:id="param1Serv2" alignment="CENTER_RIGHT" layoutX="51.0" layoutY="225.0" prefHeight="25.0" prefWidth="50.0" text="5" visible="false" />
+                     </children>
+                  </AnchorPane>
+               </content>
+            </TitledPane>
             <TitledPane animated="false" layoutX="10.0" layoutY="35.0" text="Simulacion">
                <content>
                   <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                      <children>
-                        <Button fx:id="btnSimular" layoutX="14.0" layoutY="14.0" mnemonicParsing="false" onAction="#iniciarSimulacion" prefHeight="25.0" prefWidth="178.0" text="Simular" />
+                        <Button fx:id="btnSimular" layoutX="14.0" layoutY="139.0" mnemonicParsing="false" onAction="#iniciarSimulacion" prefHeight="25.0" prefWidth="178.0" text="Simular" />
+                        <TextField fx:id="simulationsQuantity" alignment="CENTER_RIGHT" layoutX="127.0" layoutY="14.0" prefHeight="25.0" prefWidth="65.0" text="1000" />
+                        <Label layoutX="14.0" layoutY="18.0" text="Cant. Simulaciones" />
+                        <TextField fx:id="simulationsDuration" alignment="CENTER_RIGHT" layoutX="16.0" layoutY="62.0" prefHeight="25.0" prefWidth="175.0" text="10" />
+                        <TextField fx:id="maxInQueue" alignment="CENTER_RIGHT" layoutX="16.0" layoutY="104.0" prefHeight="25.0" prefWidth="174.0" text="6" />
+                        <Label layoutX="16.0" layoutY="45.0" text="Duracion de simulacion (horas)" />
+                        <Label layoutX="16.0" layoutY="87.0" text="Duracion max. en cola (minutos)" />
                      </children>
                   </AnchorPane>
                </content>
@@ -29,11 +89,30 @@
       </Accordion>
    </right>
    <center>
-      <SplitPane orientation="VERTICAL" prefHeight="200.0" prefWidth="160.0" BorderPane.alignment="CENTER">
+      <SplitPane dividerPositions="0.5" orientation="VERTICAL" prefHeight="200.0" prefWidth="160.0" BorderPane.alignment="CENTER">
         <items>
           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
                <children>
-                  <TextArea fx:id="textBox" editable="false" layoutX="14.0" layoutY="39.0" prefHeight="544.0" prefWidth="559.0" />
+                  <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#f7fbff" height="169.0" layoutX="175.0" layoutY="64.0" stroke="BLACK" strokeType="INSIDE" style="-fx-effect: dropshadow(three-pass-box, grey,5, 0, 0, 0);;" width="247.0" />
+                  <Text layoutX="253.0" layoutY="60.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Sistema de Colas" />
+                  <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#0000000d" height="133.0" layoutX="343.0" layoutY="89.0" stroke="BLACK" strokeType="INSIDE" width="71.0" />
+                  <Rectangle fx:id="cola" arcHeight="5.0" arcWidth="5.0" fill="#0000000d" height="40.0" layoutX="183.0" layoutY="128.0" stroke="BLACK" strokeType="INSIDE" width="116.0" />
+                  <Text layoutX="229.0" layoutY="124.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Cola" />
+                  <Text layoutX="351.0" layoutY="85.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Servidores" />
+                  <Rectangle fx:id="servidor0" arcHeight="5.0" arcWidth="5.0" fill="DODGERBLUE" height="26.0" layoutX="350.0" layoutY="96.0" stroke="BLACK" strokeType="INSIDE" width="56.0" />
+                  <Rectangle fx:id="servidor1" arcHeight="5.0" arcWidth="5.0" fill="DODGERBLUE" height="26.0" layoutX="350.0" layoutY="127.0" stroke="BLACK" strokeType="INSIDE" width="56.0" />
+                  <Rectangle fx:id="servidor2" arcHeight="5.0" arcWidth="5.0" fill="DODGERBLUE" height="26.0" layoutX="350.0" layoutY="157.0" stroke="BLACK" strokeType="INSIDE" width="56.0" />
+                  <Rectangle fx:id="servidor3" arcHeight="5.0" arcWidth="5.0" fill="DODGERBLUE" height="26.0" layoutX="350.0" layoutY="188.0" stroke="BLACK" strokeType="INSIDE" width="56.0" />
+                  <SVGPath fx:id="indicadorEntrada" content="M32.135,16.817H0.5c-0.276,0-0.5-0.224-0.5-0.5s0.224-0.5,0.5-0.5h31.635c0.276,0,0.5,0.224,0.5,0.5   S32.411,16.817,32.135,16.817z M19.598,29.353c-0.128,0-0.256-0.049-0.354-0.146c-0.195-0.195-0.195-0.512,0-0.707l12.184-12.184L19.244,4.136   c-0.195-0.195-0.195-0.512,0-0.707s0.512-0.195,0.707,0l12.537,12.533c0.094,0.094,0.146,0.221,0.146,0.354   s-0.053,0.26-0.146,0.354L19.951,29.206C19.854,29.304,19.726,29.353,19.598,29.353z" layoutX="117.0" layoutY="131.0" visible="false" />
+                  <SVGPath fx:id="indicadorSalida0" content="M32.135,16.817H0.5c-0.276,0-0.5-0.224-0.5-0.5s0.224-0.5,0.5-0.5h31.635c0.276,0,0.5,0.224,0.5,0.5   S32.411,16.817,32.135,16.817z M19.598,29.353c-0.128,0-0.256-0.049-0.354-0.146c-0.195-0.195-0.195-0.512,0-0.707l12.184-12.184L19.244,4.136   c-0.195-0.195-0.195-0.512,0-0.707s0.512-0.195,0.707,0l12.537,12.533c0.094,0.094,0.146,0.221,0.146,0.354   s-0.053,0.26-0.146,0.354L19.951,29.206C19.854,29.304,19.726,29.353,19.598,29.353z" layoutX="417.0" layoutY="92.0" visible="false" />
+                  <SVGPath fx:id="indicadorSalida1" content="M32.135,16.817H0.5c-0.276,0-0.5-0.224-0.5-0.5s0.224-0.5,0.5-0.5h31.635c0.276,0,0.5,0.224,0.5,0.5   S32.411,16.817,32.135,16.817z M19.598,29.353c-0.128,0-0.256-0.049-0.354-0.146c-0.195-0.195-0.195-0.512,0-0.707l12.184-12.184L19.244,4.136   c-0.195-0.195-0.195-0.512,0-0.707s0.512-0.195,0.707,0l12.537,12.533c0.094,0.094,0.146,0.221,0.146,0.354   s-0.053,0.26-0.146,0.354L19.951,29.206C19.854,29.304,19.726,29.353,19.598,29.353z" layoutX="417.0" layoutY="123.0" visible="false" />
+                  <SVGPath fx:id="indicadorSalida2" content="M32.135,16.817H0.5c-0.276,0-0.5-0.224-0.5-0.5s0.224-0.5,0.5-0.5h31.635c0.276,0,0.5,0.224,0.5,0.5   S32.411,16.817,32.135,16.817z M19.598,29.353c-0.128,0-0.256-0.049-0.354-0.146c-0.195-0.195-0.195-0.512,0-0.707l12.184-12.184L19.244,4.136   c-0.195-0.195-0.195-0.512,0-0.707s0.512-0.195,0.707,0l12.537,12.533c0.094,0.094,0.146,0.221,0.146,0.354   s-0.053,0.26-0.146,0.354L19.951,29.206C19.854,29.304,19.726,29.353,19.598,29.353z" layoutX="417.0" layoutY="155.0" visible="false" />
+                  <SVGPath fx:id="indicadorSalida3" content="M32.135,16.817H0.5c-0.276,0-0.5-0.224-0.5-0.5s0.224-0.5,0.5-0.5h31.635c0.276,0,0.5,0.224,0.5,0.5   S32.411,16.817,32.135,16.817z M19.598,29.353c-0.128,0-0.256-0.049-0.354-0.146c-0.195-0.195-0.195-0.512,0-0.707l12.184-12.184L19.244,4.136   c-0.195-0.195-0.195-0.512,0-0.707s0.512-0.195,0.707,0l12.537,12.533c0.094,0.094,0.146,0.221,0.146,0.354   s-0.053,0.26-0.146,0.354L19.951,29.206C19.854,29.304,19.726,29.353,19.598,29.353z" layoutX="417.0" layoutY="184.0" visible="false" />
+               </children>
+            </AnchorPane>
+          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
+               <children>
+                  <TextArea fx:id="textBox" editable="false" layoutX="14.0" layoutY="39.0" prefHeight="230.0" prefWidth="559.0" />
                   <Label layoutX="14.0" layoutY="14.0" text="Resultados" />
                </children>
             </AnchorPane>
