@@ -159,7 +159,7 @@ public class Estadisticas {
     }
 
     // redondear doubles a dos decimales
-    public double redondear(double value) {
+    private double redondear(double value) {
         BigDecimal bd = new BigDecimal(value);
         bd = bd.setScale(2, RoundingMode.HALF_UP);
         return bd.doubleValue();

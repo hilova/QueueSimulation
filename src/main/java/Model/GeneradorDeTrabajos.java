@@ -8,7 +8,7 @@ public class GeneradorDeTrabajos {
     private LocalTime tiempoSiguienteLlegada;
 
     public GeneradorDeTrabajos() {
-        this.distribucionTiempoLlegadas = new DistribucionPoisson(2);
+        this.distribucionTiempoLlegadas = new DistribucionExponencial(2);
     }
 
     public GeneradorDeTrabajos(Distribucion distribucionTiempoLlegadas) {
