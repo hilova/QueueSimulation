@@ -7,6 +7,7 @@ public class Servidor implements Comparable{
     private LocalTime tiempoSalida; // tiempo de salida del trabajo actual
     private Duration tiempoServicio;
     private LocalTime tiempoDeEntradaAlSistema;
+    private LocalTime tiempoDeInicioDeOcio;
     private boolean ocupado;
     private String nombre;
 
@@ -27,19 +28,23 @@ public class Servidor implements Comparable{
         // Duration requiere un int, se transforma a nanosegundos para obtener la mejor precisión
         tiempoServicio = Duration.ofNanos(Math.round(distribucionTiempoServicio.calcular()*60000000000L));
         tiempoSalida = tiempoActual.plus(tiempoServicio); // calcular su tiempo de salida
+        tiempoDeInicioDeOcio = null;
     }
 
+    // para poder registrar los tiempos de respuesta, recibe el tiempo en que llegó el trabajo
     public void asignarTrabajo(LocalTime tiempoActual, LocalTime tiempoDeEntradaAlSistema) {
         ocupado = true; // ahora esta ocupado
-        this.tiempoDeEntradaAlSistema = tiempoDeEntradaAlSistema;
+        this.tiempoDeEntradaAlSistema = LocalTime.from(tiempoDeEntradaAlSistema);
         // Duration requiere un int, se transforma a nanosegundos para obtener la mejor precisión
         tiempoServicio = Duration.ofNanos(Math.round(distribucionTiempoServicio.calcular()*60000000000L));
         tiempoSalida = tiempoActual.plus(tiempoServicio); // calcular su tiempo de salida
+        tiempoDeInicioDeOcio = null;
     }
 
-    public void terminarTrabajo() {
+    public void terminarTrabajo(LocalTime tiempoActual) {
         ocupado = false; // está ocioso
-        tiempoSalida = LocalTime.MAX;  // conviene asignarlo al tiempo máximo para hacer comparaciones con otros servidores
+        tiempoDeInicioDeOcio = LocalTime.from(tiempoActual);
+        tiempoSalida = null;
     }
 
     public LocalTime getTiempoSalida() {
@@ -63,5 +68,9 @@ public class Servidor implements Comparable{
 
     public void setNombre(String nombre) {
         this.nombre = nombre;
+    }
+
+    public LocalTime getTiempoDeInicioDeOcio() {
+        return tiempoDeInicioDeOcio;
     }
 }
