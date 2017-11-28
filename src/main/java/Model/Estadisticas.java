@@ -9,15 +9,15 @@ import java.util.List;
 
 public class Estadisticas {
     // SE REGISTRAN LOS TOTALES PARA CALCULAR LOS DATOS AL FINALIZAR
-    // TODO (a) the expected waiting time for a randomly selected job
+    // (a) the expected waiting time for a randomly selected job
     private Duration tiempoEsperandoEnColaTotal;
     private LinkedList<Duration> duracionesEnCola;
 
-    // TODO (b) the expected response time;
+    //(b) the expected response time;
     private Duration tiempoDeRespuestaTotal;
     private LinkedList<Duration> duracionesDeRespuesta;
 
-    // TODO (c) the expected length of a queue (excluding the jobs receiving service), when a new job arrives
+    //(c) the expected length of a queue (excluding the jobs receiving service), when a new job arrives
     private double tamañoDeColaTotalPorLlegada;
     private LinkedList<Integer> longitudesEnCola;
 
@@ -25,7 +25,7 @@ public class Estadisticas {
     private Duration tiempoDeEsperaMaximoTotal;
     private LinkedList<Integer> longitudesEnColaMax;
 
-    // TODO (e) the expected maximum length of a queue during a 10-hour day
+    //(e) the expected maximum length of a queue during a 10-hour day
     private Duration tiempoDeEsperaMinimoTotal;
 
     // TODO (f) the probability that at least one server is available, when a job arrives
@@ -43,6 +43,7 @@ public class Estadisticas {
     // (j) the expected number of jobs still remaining in the system at 6:03 pm
     private double trabajosRestantesAlFinalizarTotales;
 
+    // TODO (k) the expected percentage of jobs that left the queue prematurely.
     public Estadisticas() {
         tiempoEsperandoEnColaTotal = Duration.ZERO;
         tiempoDeRespuestaTotal = Duration.ZERO;
@@ -86,7 +87,7 @@ public class Estadisticas {
         duracionesEnCola.add(esperaEnCola);
     }
 
-    // TODO enviar tiempo de respuesta en SistemaColas.java
+
     public void añadirTrabajoFinalizado(String nombreServidor, LocalTime tiempoDeEntrada, LocalTime tiempoDeSalida){
         if (trabajosProcesadosTotalesPorServidor.containsKey(nombreServidor)) {
             trabajosProcesadosTotalesPorServidor.put(nombreServidor, 1+trabajosProcesadosTotalesPorServidor.get(nombreServidor));
