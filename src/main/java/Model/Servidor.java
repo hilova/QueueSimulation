@@ -10,12 +10,15 @@ public class Servidor implements Comparable{
     private LocalTime tiempoDeInicioDeOcio;
     private boolean ocupado;
     private String nombre;
+    private int id;
+    private static int count;
 
     public Servidor(Distribucion distribucionTiempoServicio, String nombre) {
         this.distribucionTiempoServicio = distribucionTiempoServicio;
         ocupado = false;
         tiempoSalida = LocalTime.MAX;
         this.nombre = nombre;
+        id = ++count;
     }
 
     public LocalTime getTiempoDeEntradaAlSistema(){
@@ -64,6 +67,10 @@ public class Servidor implements Comparable{
 
     public String getNombre() {
         return nombre;
+    }
+
+    public int getId() {
+        return id;
     }
 
     public void setNombre(String nombre) {

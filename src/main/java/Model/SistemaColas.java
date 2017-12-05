@@ -16,6 +16,7 @@ public class SistemaColas {
     private LocalTime tiempoActual, tiempoMax;
     private GeneradorDeTrabajos generadorLlegadas;
     private Estadisticas estadisticas;
+    private QueueLogger bitacora;
 
     public SistemaColas(Distribucion[] distsServidores, Distribucion distLlegadas, Estadisticas estadisticas) {
         colaTrabajos = new LinkedBlockingQueue<LocalTime>();
@@ -42,6 +43,7 @@ public class SistemaColas {
         servidoresOciosos = new LinkedList<Servidor>();
         servidoresOcupados = new PriorityQueue<Servidor>();
         this.estadisticas = new Estadisticas();
+        this.bitacora = new QueueLogger();
 
         // inicializar los servidores y almacenarlos en la lista de ociosos
         Servidor serv;
@@ -57,7 +59,12 @@ public class SistemaColas {
         tiempoMax = null;
     }
 
-    public void iniciarSimulacion(int duracionHoras,int minutosMaxEnCola) {
+    public QueueLogger getBitacora() {
+        return bitacora;
+    }
+
+    public void iniciarSimulacion(int duracionHoras, int minutosMaxEnCola) {
+
 
         // preparar estructuras y variables
         // poner las horas
@@ -68,6 +75,7 @@ public class SistemaColas {
         servidoresOcupados.clear();
         // liberar los servidores que seguían ocupados
         for(Servidor s : servidoresOciosos) {
+
             s.terminarTrabajo(tiempoActual);
         }
         // limpiar la cola de trabajos
@@ -86,6 +94,9 @@ public class SistemaColas {
 
         generadorLlegadas.generarSiguienteLlegada(tiempoActual); // generar la primera llegada
 
+        //Se registra en la bitacora lo sucedido.
+        bitacora.register(0, "-----------------------------------------------------------------SIMULACIÓN INICIADA");
+
         // lógica principal de la simulación:
         // mientras no se haya terminado el tiempo
         while(tiempoActual.isBefore(tiempoMax)) {
@@ -95,12 +106,16 @@ public class SistemaColas {
             if(servidoresOcupados.isEmpty() || generadorLlegadas.getTiempoSiguienteLlegada().isBefore(servidoresOcupados.peek().getTiempoSalida())) {
                 // procesar una llegada
                 estadisticas.añadirLlegadaNueva(colaTrabajos.size(), servidoresOciosos.size());
+                bitacora.register(1, "Ha llegado un trabajo al sistema.");
 
 
                 tiempoActual = generadorLlegadas.getTiempoSiguienteLlegada(); // actualizar tiempo actual
                 if(servidoresOciosos.isEmpty()) {
                     // no hay servidores disponibles, añadir el trabajo a la cola
                     colaTrabajos.add(LocalTime.from(tiempoActual));
+                    //Se registra en la bitacora lo sucedido.
+                    bitacora.register(2, "Ha entrado un trabajo a la cola.");
+                    bitacora.register(7, "Longitud de cola actual: " + colaTrabajos.size());
 
                 } else {
                     // escoger un servidor ocioso al azar
@@ -111,6 +126,8 @@ public class SistemaColas {
                     // asignar el trabajo al servidor escogido
                     estadisticas.añadirTiempoOciosoAServidor(serv.getNombre(), serv.getTiempoDeInicioDeOcio(), tiempoActual);  // Se agrega el tiempo ocioso del servidor
                     serv.asignarTrabajo(tiempoActual);
+                    //Se registra en la bitacora lo sucedido.
+                    bitacora.register(30+serv.getId(), "Un trabajo ha sido asignado al servidor " + serv.getId());
 
                     // transferirlo a la lista de servidores ocupados
                     servidoresOcupados.add(serv);
@@ -123,6 +140,9 @@ public class SistemaColas {
                 tiempoActual = servidoresOcupados.peek().getTiempoSalida(); // actualizar tiempo actual
                 // registrar estadística: cual servidor terminó el trabajo
                 estadisticas.añadirTrabajoFinalizado(servidoresOcupados.peek().getNombre(), servidoresOcupados.peek().getTiempoDeEntradaAlSistema(),tiempoActual);
+                //Se registra en la bitacora lo sucedido.
+                bitacora.register(40+servidoresOcupados.peek().getId(), "Ha finalizado un trabajo en el servidor " + servidoresOcupados.peek().getId());
+
 
                 // actualizar la cola eliminando trabajos que hayan excedido el tiempo límite
                 while(!colaTrabajos.isEmpty()) {
@@ -132,6 +152,9 @@ public class SistemaColas {
                         // excedió el tiempo maximo, eliminar de la cola
                         estadisticas.añadirTiempoDeEsperaEnCola(duracionMaxEnCola); // El trabajo fue eliminado, se agrega el tiempo maximo a la estadisticas)
                         estadisticas.añadirTrabajoAbandonoLaCola();                 // Se registra que el trabajo abandonó la cola
+                        bitacora.register(5, "Trabajo sacado de cola por exceder tiempo límite.");  //Se registra en la bitacora lo sucedido.
+                        bitacora.register(7, "Longitud de cola actual: " + colaTrabajos.size());
+
                         colaTrabajos.poll();
                     } else {
                         // no habrá más trabajos por eliminar
@@ -145,6 +168,7 @@ public class SistemaColas {
 
                     // transferirlo a la lista de servidores ociosos
                     servidoresOciosos.add(servidoresOcupados.poll());
+                    bitacora.register(7, "Longitud de cola actual: " + colaTrabajos.size());
 
                 } else {
                     // hay trabajos en la cola, eliminar uno y asignarlo al servidor
@@ -154,6 +178,11 @@ public class SistemaColas {
 
                     // eliminar y reinsertar el servidor para actualizar el heap
                     serv = servidoresOcupados.poll();
+
+                    //Se registra en la bitacora lo sucedido.
+                    bitacora.register(30+serv.getId(), "Un trabajo ha sido asignado al servidor " + serv.getId());
+                    bitacora.register(7, "Longitud de cola actual: " + colaTrabajos.size());
+
                     serv.asignarTrabajo(tiempoActual,colaTrabajos.poll());
                     servidoresOcupados.add(serv);
                 }
@@ -163,6 +192,8 @@ public class SistemaColas {
         }
 
         estadisticas.terminarSimulacion(colaTrabajos.size());
+        //Se registra en la bitacora lo sucedido.
+        bitacora.register(6, "-----------------------------------------------------------------SIMULACIÓN TERMINADA");
     }
 
     public Estadisticas getEstadisticas() {

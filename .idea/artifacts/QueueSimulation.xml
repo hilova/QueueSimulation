@@ -3,12 +3,15 @@
     <output-path>$PROJECT_DIR$/out/artifacts/QueueSimulation</output-path>
     <properties id="javafx-properties">
       <options>
-        <option name="appClass" value="main.java.Main" />
+        <option name="appClass" value="Main" />
         <option name="description" value="" />
+        <option name="height" value="600" />
         <option name="htmlPlaceholderId" value="" />
+        <option name="nativeBundle" value="all" />
         <option name="title" value="" />
         <option name="vendor" value="" />
         <option name="version" value="" />
+        <option name="width" value="800" />
       </options>
     </properties>
     <root id="root">
