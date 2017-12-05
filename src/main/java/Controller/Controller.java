@@ -4,15 +4,19 @@ import Model.*;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.scene.control.*;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
-import javafx.scene.paint.Paint;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.SVGPath;
+import javafx.util.Pair;
+
 
 public class Controller {
 
 
     public Button btnSimular;
+    public Button stopAnimation;
     public SVGPath indicadorEntrada;
     public SVGPath indicadorSalida0;
     public SVGPath indicadorSalida1;
@@ -51,9 +55,26 @@ public class Controller {
     public TextField simulationsQuantity;
     public TextField maxInQueue;
     public TextField simulationsDuration;
+    public ImageView work0;
+    public ImageView work1;
+    public ImageView work2;
+    public ImageView work3;
+    public ImageView work4;
+    public ImageView work5;
+    public ImageView work6;
+    public ImageView work7;
+    public ImageView work8;
+    public ImageView work9;
+    public ImageView work10;
+    public ImageView work11;
+    public ImageView work12;
+
+    private Thread animation;
+    private volatile boolean animationContinue;
 
 
-
+    public Controller(){
+    }
     public void ingresoAlSistema() {
         Thread hola = new Thread(new Runnable() {
             @Override
@@ -222,6 +243,233 @@ public class Controller {
     }
 
     public void setTrabajosEnCola(int tamanoCola){
+        switch (tamanoCola){
+            case 0:
+                work0.setVisible(false);
+                work1.setVisible(false);
+                work2.setVisible(false);
+                work3.setVisible(false);
+                work4.setVisible(false);
+                work5.setVisible(false);
+                work6.setVisible(false);
+                work7.setVisible(false);
+                work8.setVisible(false);
+                work9.setVisible(false);
+                work10.setVisible(false);
+                work11.setVisible(false);
+                work12.setVisible(false);
+                break;
+            case 1:
+                work0.setVisible(true);
+                work1.setVisible(false);
+                work2.setVisible(false);
+                work3.setVisible(false);
+                work4.setVisible(false);
+                work5.setVisible(false);
+                work6.setVisible(false);
+                work7.setVisible(false);
+                work8.setVisible(false);
+                work9.setVisible(false);
+                work10.setVisible(false);
+                work11.setVisible(false);
+                work12.setVisible(false);
+                break;
+            case 2:
+                work0.setVisible(true);
+                work1.setVisible(true);
+                work2.setVisible(false);
+                work3.setVisible(false);
+                work4.setVisible(false);
+                work5.setVisible(false);
+                work6.setVisible(false);
+                work7.setVisible(false);
+                work8.setVisible(false);
+                work9.setVisible(false);
+                work10.setVisible(false);
+                work11.setVisible(false);
+                work12.setVisible(false);
+                break;
+            case 3:
+                work0.setVisible(true);
+                work1.setVisible(true);
+                work2.setVisible(true);
+                work3.setVisible(false);
+                work4.setVisible(false);
+                work5.setVisible(false);
+                work6.setVisible(false);
+                work7.setVisible(false);
+                work8.setVisible(false);
+                work9.setVisible(false);
+                work10.setVisible(false);
+                work11.setVisible(false);
+                work12.setVisible(false);
+                break;
+            case 4:
+                work0.setVisible(true);
+                work1.setVisible(true);
+                work2.setVisible(true);
+                work3.setVisible(true);
+                work4.setVisible(false);
+                work5.setVisible(false);
+                work6.setVisible(false);
+                work7.setVisible(false);
+                work8.setVisible(false);
+                work9.setVisible(false);
+                work10.setVisible(false);
+                work11.setVisible(false);
+                work12.setVisible(false);
+                break;
+            case 5:
+                work0.setVisible(true);
+                work1.setVisible(true);
+                work2.setVisible(true);
+                work3.setVisible(true);
+                work4.setVisible(true);
+                work5.setVisible(false);
+                work6.setVisible(false);
+                work7.setVisible(false);
+                work8.setVisible(false);
+                work9.setVisible(false);
+                work10.setVisible(false);
+                work11.setVisible(false);
+                work12.setVisible(false);
+                break;
+            case 6:
+                work0.setVisible(true);
+                work1.setVisible(true);
+                work2.setVisible(true);
+                work3.setVisible(true);
+                work4.setVisible(true);
+                work5.setVisible(true);
+                work6.setVisible(false);
+                work7.setVisible(false);
+                work8.setVisible(false);
+                work9.setVisible(false);
+                work10.setVisible(false);
+                work11.setVisible(false);
+                work12.setVisible(false);
+                break;
+            case 7:
+                work0.setVisible(true);
+                work1.setVisible(true);
+                work2.setVisible(true);
+                work3.setVisible(true);
+                work4.setVisible(true);
+                work5.setVisible(true);
+                work6.setVisible(true);
+                work7.setVisible(false);
+                work8.setVisible(false);
+                work9.setVisible(false);
+                work10.setVisible(false);
+                work11.setVisible(false);
+                work12.setVisible(false);
+                break;
+            case 8:
+                work0.setVisible(true);
+                work1.setVisible(true);
+                work2.setVisible(true);
+                work3.setVisible(true);
+                work4.setVisible(true);
+                work5.setVisible(true);
+                work6.setVisible(true);
+                work7.setVisible(true);
+                work8.setVisible(false);
+                work9.setVisible(false);
+                work10.setVisible(false);
+                work11.setVisible(false);
+                work12.setVisible(false);
+                break;
+            case 9:
+                work0.setVisible(true);
+                work1.setVisible(true);
+                work2.setVisible(true);
+                work3.setVisible(true);
+                work4.setVisible(true);
+                work5.setVisible(true);
+                work6.setVisible(true);
+                work7.setVisible(true);
+                work8.setVisible(true);
+                work9.setVisible(false);
+                work10.setVisible(false);
+                work11.setVisible(false);
+                work12.setVisible(false);
+                break;
+            case 10:
+                work0.setVisible(true);
+                work1.setVisible(true);
+                work2.setVisible(true);
+                work3.setVisible(true);
+                work4.setVisible(true);
+                work5.setVisible(true);
+                work6.setVisible(true);
+                work7.setVisible(true);
+                work8.setVisible(true);
+                work9.setVisible(true);
+                work10.setVisible(false);
+                work11.setVisible(false);
+                work12.setVisible(false);
+                break;
+            case 11:
+                work0.setVisible(true);
+                work1.setVisible(true);
+                work2.setVisible(true);
+                work3.setVisible(true);
+                work4.setVisible(true);
+                work5.setVisible(true);
+                work6.setVisible(true);
+                work7.setVisible(true);
+                work8.setVisible(true);
+                work9.setVisible(true);
+                work10.setVisible(true);
+                work11.setVisible(false);
+                work12.setVisible(false);
+                break;
+            case 12:
+                work0.setVisible(true);
+                work1.setVisible(true);
+                work2.setVisible(true);
+                work3.setVisible(true);
+                work4.setVisible(true);
+                work5.setVisible(true);
+                work6.setVisible(true);
+                work7.setVisible(true);
+                work8.setVisible(true);
+                work9.setVisible(true);
+                work10.setVisible(true);
+                work11.setVisible(true);
+                work12.setVisible(false);
+                break;
+            case 13:
+                work0.setVisible(true);
+                work1.setVisible(true);
+                work2.setVisible(true);
+                work3.setVisible(true);
+                work4.setVisible(true);
+                work5.setVisible(true);
+                work6.setVisible(true);
+                work7.setVisible(true);
+                work8.setVisible(true);
+                work9.setVisible(true);
+                work10.setVisible(true);
+                work11.setVisible(true);
+                work12.setVisible(true);
+                break;
+            default:
+                work0.setVisible(true);
+                work1.setVisible(true);
+                work2.setVisible(true);
+                work3.setVisible(true);
+                work4.setVisible(true);
+                work5.setVisible(true);
+                work6.setVisible(true);
+                work7.setVisible(true);
+                work8.setVisible(true);
+                work9.setVisible(true);
+                work10.setVisible(true);
+                work11.setVisible(true);
+                work12.setVisible(true);
+                break;
+        }
 
     }
 
@@ -284,6 +532,76 @@ public class Controller {
                     }
 
                     showResultado(sim.getEstadisticas().procesarDatos());
+
+                    animation = new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            animationContinue = true;
+                            stopAnimation.setVisible(true);
+                            for (Pair<Integer, String> linea: sim.getBitacora()){
+                                if (animationContinue == false) break;
+                                System.out.println(linea.getKey()+ "\t" + linea.getValue());
+                                try{
+                                    switch (linea.getKey()){
+                                        case 1:
+                                            ingresoAlSistema();
+                                            break;
+                                        case 2:
+                                            break;
+                                        case 31:
+                                            setEstadoDelServidor(0,true);
+                                            ingresoAlServidor(0);
+                                            break;
+                                        case 32:
+                                            setEstadoDelServidor(1,true);
+                                            ingresoAlServidor(1);
+                                            break;
+                                        case 33:
+                                            setEstadoDelServidor(2,true);
+                                            ingresoAlServidor(2);
+                                            break;
+                                        case 34:
+                                            setEstadoDelServidor(3,true);
+                                            ingresoAlServidor(3);
+                                            break;
+                                        case 41:
+                                            setEstadoDelServidor(0,false);
+                                            salidaDelServidor(0);
+                                            break;
+                                        case 42:
+                                            setEstadoDelServidor(1,false);
+                                            salidaDelServidor(1);
+                                            break;
+                                        case 43:
+                                            setEstadoDelServidor(2,false);
+                                            salidaDelServidor(2);
+                                            break;
+                                        case 44:
+                                            setEstadoDelServidor(3,false);
+                                            salidaDelServidor(3);
+                                            break;
+                                        case 5:
+                                            break;
+                                        case 6:
+                                            setTrabajosEnCola(0);
+                                            break;
+                                        case 7:
+                                            int quantity = Integer.parseInt(linea.getValue().split(": ")[1]);
+                                            setTrabajosEnCola(quantity);
+                                            break;
+                                        default:
+                                            break;
+                                    }
+                                    Thread.sleep(20);
+                                }catch (Exception e){
+                                    System.out.println(e.getMessage());
+                                }
+
+                            }
+                            stopAnimation.setVisible(false);
+                        }
+                    });
+                    animation.start();
                     btnSimular.setDisable(false);
                 }
 
@@ -292,6 +610,9 @@ public class Controller {
         ejecucionNormal.start();
     }
 
+    public void stopAnimation(ActionEvent actionEvent){
+        animationContinue = false;
+    }
     public void showResultado(String resultado){
         textBox.setText(resultado);
     }
